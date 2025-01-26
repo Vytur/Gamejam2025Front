@@ -1,10 +1,8 @@
+import { initGrid, drawGrid } from "./grid.js";
+
 window.onload = function () {
   const canvas = document.getElementById("canvas");
   const context = canvas.getContext("2d");
-
-  // Example: Draw a rectangle
-  context.fillStyle = "blue";
-  context.fillRect(50, 50, 150, 100);
 
   const port = 11100;
   // Socket.IO connection
@@ -17,4 +15,7 @@ window.onload = function () {
   socket.on("message", (data) => {
     console.log("Received from server:", data);
   });
+
+  initGrid();
+  drawGrid();
 };
