@@ -3,23 +3,29 @@ import * as PIXI from 'pixi.js';
 
 export const createGrid = ({
   container,
-  gridSize,
+  grid,
   tileSize,
   onTileClick,
+  colors,
   windowWidth,
   windowHeight,
 }) => {
+  // Clear existing children
+  container.removeChildren();
+
   // Center the grid
   container.position.set(
-    windowWidth / 2 - (gridSize * tileSize) / 2,
-    windowHeight / 2 - (gridSize * tileSize) / 2
+    windowWidth / 2 - (grid[0].length * tileSize) / 2,
+    windowHeight / 2 - (grid.length * tileSize) / 2
   );
 
-  for (let row = 0; row < gridSize; row++) {
-    for (let col = 0; col < gridSize; col++) {
+  const tiles = {};
+
+  for (let row = 0; row < grid.length; row++) {
+    for (let col = 0; col < grid[row].length; col++) {
       const tile = new PIXI.Graphics()
         .rect(0, 0, tileSize, tileSize)
-        .fill({ color: 0x808080 })
+        .fill({ color: grid[row][col] === 0 ? colors.PURE : colors.CORRUPTED })
         .stroke({ width: 2, color: 0xFFFFFF });
       
       tile.position.set(col * tileSize, row * tileSize);
@@ -30,6 +36,28 @@ export const createGrid = ({
       });
 
       container.addChild(tile);
+      tiles[`${row}-${col}`] = tile;
+    }
+  }
+
+  return tiles;
+};
+
+export const updateGridTiles = ({
+  tiles,
+  grid,
+  colors,
+}) => {
+  for (let row = 0; row < grid.length; row++) {
+    for (let col = 0; col < grid[row].length; col++) {
+      const key = `${row}-${col}`;
+      const tile = tiles[key];
+      if (tile) {
+        tile.clear()
+            .rect(0, 0, 50, 50)
+            .fill({ color: grid[row][col] === 0 ? colors.PURE : colors.CORRUPTED })
+            .stroke({ width: 2, color: 0xFFFFFF });
+      }
     }
   }
 };
