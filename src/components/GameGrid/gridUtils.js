@@ -42,22 +42,3 @@ export const createGrid = ({
 
   return tiles;
 };
-
-export const updateGridTiles = ({
-  tiles,
-  grid,
-  colors,
-}) => {
-  for (let row = 0; row < grid.length; row++) {
-    for (let col = 0; col < grid[row].length; col++) {
-      const key = `${row}-${col}`;
-      const tile = tiles[key];
-      if (tile) {
-        tile.clear()
-            .rect(0, 0, 50, 50)
-            .fill({ color: grid[row][col] === 0 ? colors.PURE : colors.CORRUPTED })
-            .stroke({ width: 2, color: 0xFFFFFF });
-      }
-    }
-  }
-};
