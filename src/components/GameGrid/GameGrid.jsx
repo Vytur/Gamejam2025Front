@@ -15,7 +15,7 @@ const GameGrid = () => {
 
     // Initialize core systems
     gameEngineRef.current = new GameEngine();
-    networkManagerRef.current = new NetworkManager(gameEngineRef.current);
+    networkManagerRef.current = NetworkManager.getInstance(gameEngineRef.current);
     rendererRef.current = new PixiRenderer(containerRef.current, gameEngineRef.current);
 
     // Connect to server and initialize renderer

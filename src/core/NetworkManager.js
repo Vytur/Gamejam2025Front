@@ -2,9 +2,20 @@
 import { io } from "socket.io-client";
 
 export class NetworkManager {
+  static instance = null;
+  socket = null;
+  eventListeners = {};
+
   constructor(gameEngine) {
-    this.socket = null;
     this.gameEngine = gameEngine;
+    this.setupSocketListeners = this.setupSocketListeners.bind(this);
+  }
+
+  static getInstance(gameEngine) {
+    if (!NetworkManager.instance) {
+      NetworkManager.instance = new NetworkManager(gameEngine);
+    }
+    return NetworkManager.instance;
   }
 
   connect(url) {
@@ -19,16 +30,11 @@ export class NetworkManager {
     }
   }
 
-  emit(event, data) {
-    if (this.socket) {
-      this.socket.emit(event, data);
-    }
-  }
-
   setupSocketListeners() {
     this.socket.on("connect", () => {
       console.log("Connected to server");
-      this.socket.emit('request_cursors');
+      this.socket.emit("request_cursors");
+      this.socket.emit("request_inventory");
     });
 
     this.socket.on("disconnect", () => {
@@ -77,5 +83,23 @@ export class NetworkManager {
         color: 0,
       });
     });
+
+    this.socket.on("inventory_init", (data) => {
+      window.dispatchEvent(new CustomEvent("inventory_init", { detail: data }));
+    });
+
+    this.socket.on("inventory_update", (data) => {
+      window.dispatchEvent(
+        new CustomEvent("inventory_update", { detail: data })
+      );
+    });
+  }
+
+  emit(event, data) {
+    if (this.eventListeners[event]) {
+      this.eventListeners[event].forEach((callback) => {
+        callback(data);
+      });
+    }
   }
 }

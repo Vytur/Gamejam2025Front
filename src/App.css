@@ -102,3 +102,23 @@ body,
   text-align: center;
   pointer-events: auto; /* Allow interaction with the UI */
 }
+
+.coins-display {
+  padding: 5px 10px;
+}
+
+.inventory-items ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.inventory-items li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.item-actions button {
+  margin-left: 10px;
+}
