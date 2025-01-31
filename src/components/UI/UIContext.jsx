@@ -1,6 +1,5 @@
 // src/components/UI/UIContext.jsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { NetworkManager } from '../../core/NetworkManager';
 
 const UIContext = createContext();
 
