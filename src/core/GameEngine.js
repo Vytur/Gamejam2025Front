@@ -30,7 +30,7 @@ export class GameEngine extends EventEmitter {
   }
 
   updateTile(x, y, color) {
-    if (!this.gameState.grid[y] || !this.gameState.grid[y][x]) return;
+    if (!this.gameState.grid[y]) return;
     this.gameState.grid[y][x] = color;
     this.emit('tileUpdate', { x, y, color });
   }
