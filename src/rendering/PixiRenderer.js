@@ -33,14 +33,18 @@ export class PixiRenderer {
     this.gridContainer = new PIXI.Container();
     this.app.stage.addChild(this.gridContainer);
 
-    // Pass gameEngine to GridRenderer
     this.gridRenderer = new GridRenderer(
       this.gridContainer,
       this.options,
       this.gameEngine
     );
     this.cursorRenderer = new CursorRenderer(this.gridContainer);
-    this.viewportManager = new ViewportManager(this.app, this.gridContainer);
+    // Pass gameEngine to ViewportManager
+    this.viewportManager = new ViewportManager(
+      this.app,
+      this.gridContainer,
+      this.gameEngine
+    );
 
     this.setupEventListeners();
     this.setupResizeHandler();
@@ -73,6 +77,9 @@ export class PixiRenderer {
   }
 
   destroy() {
+    if (this.cursorRenderer) {
+      this.cursorRenderer.destroy();
+    }
     if (this.app) {
       this.app.destroy(true);
       this.app = null;

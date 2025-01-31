@@ -7,7 +7,22 @@ export class GameEngine extends EventEmitter {
     this.gameState = {
       grid: [],
       players: new Map(),
+      localPlayer: null
     };
+  }
+
+  updateCursorPosition(position) {
+    this.emit('localCursorMove', position);
+  }
+
+  handleCursorInit(cursors) {
+    cursors.forEach(cursor => {
+      this.updatePlayerCursor(cursor.id, { x: cursor.x, y: cursor.y });
+    });
+  }
+
+  handleNewCursor(cursor) {
+    this.updatePlayerCursor(cursor.id, { x: cursor.x, y: cursor.y });
   }
 
   handleTileClick(x, y) {

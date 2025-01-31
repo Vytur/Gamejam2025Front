@@ -28,6 +28,7 @@ export class NetworkManager {
   setupSocketListeners() {
     this.socket.on("connect", () => {
       console.log("Connected to server");
+      this.socket.emit('request_cursors');
     });
 
     this.socket.on("disconnect", () => {
@@ -42,18 +43,31 @@ export class NetworkManager {
       this.gameEngine.updateTile(x, y, color);
     });
 
+    // Cursor initialization
     this.socket.on("cursors_init", (cursors) => {
-      cursors.forEach((cursor) => {
-        this.gameEngine.updatePlayerCursor(cursor.id, cursor);
+      this.gameEngine.handleCursorInit(cursors);
+    });
+
+    // New cursor joined
+    this.socket.on("new_cursor", (cursor) => {
+      this.gameEngine.handleNewCursor(cursor);
+    });
+
+    // Cursor updates from other players
+    this.socket.on("cursor_update", (cursor) => {
+      this.gameEngine.updatePlayerCursor(cursor.id, {
+        x: cursor.x,
+        y: cursor.y,
       });
     });
 
-    this.socket.on("cursor_update", (cursor) => {
-      this.gameEngine.updatePlayerCursor(cursor.id, cursor);
-    });
-
+    // Remove disconnected cursor
     this.socket.on("remove_cursor", ({ id }) => {
       this.gameEngine.removePlayer(id);
+    });
+
+    this.gameEngine.on("localCursorMove", (position) => {
+      this.socket.emit("cursor_move", position);
     });
 
     this.gameEngine.on("tileClick", ({ x, y }) => {
